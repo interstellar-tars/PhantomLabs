@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Openings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .job {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: #f9f9f9;
+        }
+        .job h3 {
+            margin: 0 0 0.5rem;
+        }
+        .job p {
+            margin: 0.5rem 0;
+        }
+        .apply-form {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #f4f4f4;
+            border-radius: 4px;
+        }
+        .apply-form .form-group {
+            margin-bottom: 1rem;
+        }
+        .apply-form .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        .apply-form .form-group input, .apply-form .form-group textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .apply-form button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .apply-form button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Job Openings</h1>
+    </header>
+    <div class="container" id="job-container">
+        <p>Loading job openings...</p>
+    </div>
+    <script>
+        async function fetchJobs() {
+            try {
+                const response = await fetch('https://cwww-applications.cubiodojo.workers.dev/api/jobs');
+                if (!response.ok) throw new Error('Failed to fetch jobs');
+                const jobs = await response.json();
+                renderJobs(jobs);
+            } catch (error) {
+                document.getElementById('job-container').innerHTML = '<p>Error loading job openings. Please try again later.</p>';
+            }
+        }
+
+        function renderJobs(jobs) {
+            const container = document.getElementById('job-container');
+            container.innerHTML = '';
+            if (jobs.length === 0) {
+                container.innerHTML = '<p>No job openings found.</p>';
+                return;
+            }
+            jobs.forEach((job) => {
+                const jobElement = document.createElement('div');
+                jobElement.classList.add('job');
+                jobElement.innerHTML = `
+                    <h3>${job.title}</h3>
+                    <p>${job.description}</p>
+                    <form class="apply-form" onsubmit="submitApplication(event, '${job.id}')">
+                        <div class="form-group">
+                            <label for="name-${job.id}">Name</label>
+                            <input type="text" id="name-${job.id}" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email-${job.id}">Email</label>
+                            <input type="email" id="email-${job.id}" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message-${job.id}">Message</label>
+                            <textarea id="message-${job.id}" name="message" required></textarea>
+                        </div>
+                        <button type="submit">Apply</button>
+                    </form>
+                `;
+                container.appendChild(jobElement);
+            });
+        }
+
+        async function submitApplication(event, jobId) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            const applicationData = {
+                name: formData.get('name'),
+                email: formData.get('email'),
+                message: formData.get('message'),
+                job: jobId,
+            };
+            try {
+                const response = await fetch('https://cwww-applications.cubiodojo.workers.dev/api/applications', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(applicationData),
+                });
+                if (response.ok) {
+                    alert('Application submitted successfully!');
+                    form.reset();
+                } else {
+                    alert('Failed to submit application. Please try again.');
+                }
+            } catch (error) {
+                alert('An error occurred while submitting your application.');
+                console.error(error);
+            }
+        }
+
+        fetchJobs();
+    </script>
+</body>
+</html>

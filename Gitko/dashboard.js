@@ -1,4 +1,4 @@
-fetch('/api/stats')
+fetch('https://gitko.cubiodojo.workers.dev/api/stats')
   .then(res => res.json())
   .then(data => {
     const ctx = document.getElementById('pageviewsChart').getContext('2d');

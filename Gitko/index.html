@@ -8,44 +8,44 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-light">
-  <div class="container py-5">
-    <div class="d-flex align-items-center mb-4">
-      <img src="https://gitko.pages.dev/assets/images/logo-normal.png" alt="Logo" style="height: 50px;" class="me-3">
-      <h1 class="mb-0">Website Analytics</h1>
-    </div>
-    <canvas id="pageviewsChart" height="100"></canvas>
-    <canvas id="referrersChart" height="100" class="mt-5"></canvas>
-    <canvas id="devicesChart" height="100" class="mt-5"></canvas>
-  </div>
-      <div class="d-flex justify-content-end">
+  <div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div class="d-flex align-items-center">
+        <img src="https://gitko.pages.dev/assets/images/logo-normal.png" alt="Gitko Logo" style="height: 50px;" class="me-3">
+        <h1 class="mb-0">Website Analytics</h1>
+      </div>
       <button id="darkModeToggle" class="btn btn-outline-secondary btn-sm">Toggle Dark Mode</button>
     </div>
-    <script>
-      const body = document.body;
-      const toggle = document.getElementById('darkModeToggle');
-      const prefersDark = localStorage.getItem('theme') === 'dark';
 
-      function applyTheme(dark) {
+    <div id="loading" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <canvas id="pageviewsChart" height="100" class="d-none"></canvas>
+    <canvas id="referrersChart" height="100" class="mt-5 d-none"></canvas>
+    <canvas id="devicesChart" height="100" class="mt-5 d-none"></canvas>
+  </div>
+  <script src="dashboard.js"></script>
+  <script>
+    const body = document.body;
+    const toggle = document.getElementById('darkModeToggle');
+    const prefersDark = localStorage.getItem('theme') === 'dark';
+
+    function applyTheme(dark) {
       body.classList.toggle('bg-dark', dark);
       body.classList.toggle('text-light', dark);
-      Array.from(document.querySelectorAll('.card, .alert')).forEach(el => {
-      el.classList.toggle('bg-dark', dark);
-      el.classList.toggle('text-light', dark);
-      });
-      if (dark) {
-        localStorage.setItem('theme', 'dark');
-      } else {
-        localStorage.setItem('theme', 'light');
-      }
+      localStorage.setItem('theme', dark ? 'dark' : 'light');
     }
 
     toggle.addEventListener('click', () => {
       const dark = !body.classList.contains('bg-dark');
-     applyTheme(dark);
+      applyTheme(dark);
+      location.reload();
     });
 
     if (prefersDark) applyTheme(true);
   </script>
-  <script src="dashboard.js"></script>
 </body>
 </html>

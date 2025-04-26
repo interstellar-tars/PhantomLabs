@@ -17,6 +17,35 @@
     <canvas id="referrersChart" height="100" class="mt-5"></canvas>
     <canvas id="devicesChart" height="100" class="mt-5"></canvas>
   </div>
+      <div class="d-flex justify-content-end">
+      <button id="darkModeToggle" class="btn btn-outline-secondary btn-sm">Toggle Dark Mode</button>
+    </div>
+    <script>
+      const body = document.body;
+      const toggle = document.getElementById('darkModeToggle');
+      const prefersDark = localStorage.getItem('theme') === 'dark';
+
+      function applyTheme(dark) {
+      body.classList.toggle('bg-dark', dark);
+      body.classList.toggle('text-light', dark);
+      Array.from(document.querySelectorAll('.card, .alert')).forEach(el => {
+      el.classList.toggle('bg-dark', dark);
+      el.classList.toggle('text-light', dark);
+      });
+      if (dark) {
+        localStorage.setItem('theme', 'dark');
+      } else {
+        localStorage.setItem('theme', 'light');
+      }
+    }
+
+    toggle.addEventListener('click', () => {
+      const dark = !body.classList.contains('bg-dark');
+     applyTheme(dark);
+    });
+
+    if (prefersDark) applyTheme(true);
+  </script>
   <script src="dashboard.js"></script>
 </body>
 </html>

@@ -36,6 +36,8 @@
     function applyTheme(dark) {
       body.classList.toggle('bg-dark', dark);
       body.classList.toggle('text-light', dark);
+      const btn = document.getElementById('darkModeToggle');
+      if (btn) btn.textContent = dark ? 'Light Mode' : 'Dark Mode';
       localStorage.setItem('theme', dark ? 'dark' : 'light');
     }
 

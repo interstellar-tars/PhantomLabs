@@ -1,6 +1,11 @@
 fetch('https://gitko.cubiodojo.workers.dev/api/stats')
   .then(res => res.json())
   .then(data => {
+    document.getElementById('loading').classList.add('d-none');
+    ['pageviewsChart', 'referrersChart', 'devicesChart'].forEach(id => {
+      document.getElementById(id).classList.remove('d-none');
+    });
+
     const renderChart = (ctxId, label, dataSet) => {
       const ctx = document.getElementById(ctxId).getContext('2d');
       const dark = document.body.classList.contains('bg-dark');
